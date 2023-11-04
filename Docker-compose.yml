@@ -1,0 +1,11 @@
+services:
+  web_app:
+    build: .
+    ports:
+     - "5000:5000"
+    depends_on:
+      - db_container
+  db_container:
+    image: postgres:latest
+    ports:
+      - "5432:5432"

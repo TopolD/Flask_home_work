@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+     {% block content %}
+        {% if request.path=='/user' %}
+
+            {% if request.method=='GET' %}
+                <form method="post">
+                    <a href="/user/logout" style="my-link">Logout</a>
+                    <a href="/user/signup" style="my-link">SignUp</a>
+                    <a href="/user/signin" style="my-link" >SignIn</a>
+                </form>
+            {% endif %}
+
+        {% endif %}
+        {% if request.path =='/user/signin' %}
+
+            {% if request.method=='GET' %}
+                <form method="post">
+                    <input type="text" name="User_name" placeholder="User_name">
+                    <input type="password" name="Password" placeholder="Password">
+                    <button type="submit">Add</button>
+
+                </form>
+            {% endif %}
+
+        {% endif %}
+        {% if request.path =='/user/signup' %}
+
+            {% if request.method=='GET' %}
+                <form method="post">
+                    <input type="text" name="User_name" placeholder="User_name">
+                    <input type="password" name="Password" placeholder="Password">
+                    <button type="submit">Add</button>
+
+                </form>
+            {% endif %}
+
+        {% endif %}
+        {% if request.path =='/user/logout' %}
+
+        {% endif %}
+        <a href="/">Return to home</a>
+     {% endblock %}
+</body>
+</html>
