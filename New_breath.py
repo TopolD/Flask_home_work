@@ -17,8 +17,6 @@ if not session_secret:
 
 app.secret_key = session_secret
 
-user_id = session.get('ID')
-
 
 @app.route('/')
 def Window():
@@ -39,11 +37,6 @@ def Admin():
 
 @app.route('/admin/currentorders', methods=['GET'])
 def CurrentOrders():
-    return render_template('Admin.html')
-
-
-@app.route('/admin/Menu', methods=['POST', 'GET'])
-def Admin_Menu():
     return render_template('Admin.html')
 
 
@@ -103,7 +96,7 @@ def Logout():
 @app.route('/cart', methods=['GET', 'POST'])
 def Cart():
     if session.get('ID'):
-
+        user_id = session.get('ID')
         Db.init_db()
         Cart = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
         for Carts in Cart:
@@ -140,4 +133,4 @@ def Menu():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000)

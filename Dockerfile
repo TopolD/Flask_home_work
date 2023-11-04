@@ -1,5 +1,5 @@
 FROM python:latest
-
+EXPOSE 5000
 WORKDIR /app
 COPY  bib_list.txt ./
 
