@@ -10,8 +10,8 @@
             {% if request.method=='GET' %}
 
                 {% for Cart in Carts %}
-                    {{Cart.Dish_name}}|{{Cart.Price}}
-                {% endfor %}
+    {{Cart.Dish_name}}|{{Cart.Dish_price}}|{{status.Status_name}}
+    {% endfor %}
 
 
                 <form method="post">
@@ -23,14 +23,34 @@
                 </form>
 
 
-            {% endif %}
+    {% endif %}
 
     {% endif %}
     {% if request.path =='/cart/cartadd' %}
 
-        {% if request.method=='GET' %}
+    {% if request.method=='GET' %}
+    {% for Dish in Dishes%}
+    {{Dish.Dish_name}}
+    {% endfor %}
+    <form method="post">
+        <input type="text" name="Dish_name" placeholder="Dish_name">
+        <button type="submit">Add</button>
+    </form>
 
+    {% endif %}
+    {% endif %}
+    {% if request.path =='/cart/delete' %}
+    {% if request.method=='GET' %}
+    {% for Dish in Dishes%}
+    {{Dish.Dish_name}}
+    {% endfor %}
+    <form method="post">
+        <input type="text" name="Dish_name" placeholder="Dish_name">
+        <button type="submit">Add</button>
+    </form>
 
+    {% endif %}
+    {% endif %}
 
 
 </body>

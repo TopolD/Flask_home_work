@@ -5,6 +5,9 @@
     <title>Title</title>
 </head>
 <body>
-
+{% for Dish in Dishes%}
+{{Dish.Dish_name}}|{{Dish.Dish_price}}
+{% endfor %}
+<a href="/" style="my-link">Return to home</a>
 </body>
 </html>

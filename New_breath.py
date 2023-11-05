@@ -2,6 +2,7 @@ import os
 import random
 from Utils import Db, Db_moduls
 from flask import Flask, render_template, session, request
+import celery
 
 app = Flask(__name__)
 
@@ -93,29 +94,37 @@ def Logout():
     return render_template('User.html')
 
 
-@app.route('/cart', methods=['GET', 'POST'])
+@app.route('/cart', methods=['GET'])
 def Cart():
-    if session.get('ID'):
-        user_id = session.get('ID')
-        Db.init_db()
-        Cart = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
-        for Carts in Cart:
-            return render_template('Cart.html', Carts=Carts)
-
+    if request.method == 'GET':
+        if session.get('ID'):
+            user_id = session.get('ID')
+            Db.init_db()
+            status = Db.db_session.query(Db_moduls.Status).all()
+            Cart = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
+            for Carts in Cart:
+                return render_template('Cart.html', Carts=Carts, status=status)
+        else:
+            return app.redirect('/user/signin', 302)
     else:
-        return app.redirect('user/signin', 302)
+        return app.redirect('/user/signin', 302)
 
 
 @app.route('/cart/cartadd', methods=['POST', 'GET'])
 def CartAdd():
     Db.init_db()
-    req_cart = request.form.to_dict()
-    if req_cart:
-        New_car = Db_moduls.Orders(
-            Dish_name=req_cart['Dish_name'],
-        )
-        Db.db_session.add(New_car)
-        Db.db_session.commit()
+    if request.method == 'GET':
+        Dishes = Db.db_session.query(Db_moduls.Dish).all()
+        return render_template('Cart.html', Dishes=Dishes)
+
+    if request.method == 'POST':
+        req_cart = request.form.to_dict()
+        if req_cart:
+            New_car = Db_moduls.Orders(
+                Dish_name=req_cart['Dish_name'],
+            )
+            Db.db_session.add(New_car)
+            Db.db_session.commit()
     else:
         return render_template('Cart.html')
 
@@ -124,11 +133,26 @@ def CartAdd():
 
 @app.route('/cart/delete', methods=['POST', 'GET'])
 def CartDelete():
+    if request.method == 'GET':
+        Dishes = Db.db_session.query(Db_moduls.Dish).all()
+        return render_template('Cart.html', Dishes=Dishes)
+    if request.method == 'POST':
+        req_cart = request.form.to_dict()
+        if req_cart:
+            New_car = Db_moduls.Orders(
+                Dish_name=req_cart['Dish_name'],
+            )
+            Db.db_session.delete(New_car)
+            Db.db_session.commit()
     return render_template('Cart.html')
 
 
-@app.route('/menu', methods=['POST', 'GET'])
+@app.route('/menu', methods=['GET'])
 def Menu():
+    if request.method == 'GET':
+        Db.init_db()
+        Dishes = Db.db_session.query(Db_moduls.Dish).all()
+        return render_template('Menu.html', Dishes=Dishes)
     return render_template('Menu.html')
 
 
