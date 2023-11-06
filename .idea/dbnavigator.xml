@@ -26,6 +26,7 @@
     <filter-actions connection-id="20ea1f7c-5358-4e33-945b-14de2e753594" dataset="main.users" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="20ea1f7c-5358-4e33-945b-14de2e753594" dataset="main.Orders" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="20ea1f7c-5358-4e33-945b-14de2e753594" dataset="main.status" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="20ea1f7c-5358-4e33-945b-14de2e753594" dataset="main.addresses" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="20ea1f7c-5358-4e33-945b-14de2e753594" dataset="main.dishes" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="20ea1f7c-5358-4e33-945b-14de2e753594" dataset="main.alembic_version" active-filter-id="" />
     <filter-actions connection-id="20ea1f7c-5358-4e33-945b-14de2e753594" dataset="main.orders" active-filter-id="EMPTY_FILTER" />
