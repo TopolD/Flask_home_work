@@ -2,7 +2,7 @@ import os
 import random
 from Utils import Db, Db_moduls
 from flask import Flask, render_template, session, request
-import celery
+from celery_task import send_email
 
 app = Flask(__name__)
 
@@ -21,6 +21,7 @@ app.secret_key = session_secret
 
 @app.route('/')
 def Window():
+    # send_email.delay('n@gmail.com')
     return render_template('Base.html')
 
 
@@ -97,15 +98,15 @@ def Logout():
 @app.route('/cart', methods=['GET'])
 def Cart():
     if request.method == 'GET':
-        if session.get('ID'):
-            user_id = session.get('ID')
-            Db.init_db()
-            status = Db.db_session.query(Db_moduls.Status).all()
-            Cart = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
-            for Carts in Cart:
-                return render_template('Cart.html', Carts=Carts, status=status)
-        else:
-            return app.redirect('/user/signin', 302)
+        # if session.get('ID'):
+        user_id = 1
+        Db.init_db()
+        statuses = Db.db_session.query(Db_moduls.Status).all()
+        Carts = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
+        for status in statuses:
+            return render_template('Cart.html', Carts=Carts, status=status)
+    # else:
+    #     return app.redirect('/user/signin', 302)
     else:
         return app.redirect('/user/signin', 302)
 

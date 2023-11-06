@@ -64,13 +64,13 @@ class Category(Base):
 
 # cart
 class Orders(Base):
-    __tablename__ = 'orders'
+    __tablename__ = 'Orders'
     ID = Column(Integer, primary_key=True, autoincrement=True)
     ID_USER = Column(Integer, ForeignKey('users.ID'))
     ID_ADDRESS = Column(Integer, ForeignKey('addresses.ID'))
     Dish_name = Column(String(50))
     Status = Column(String(50), ForeignKey('status.Status_name'))
-    Price = Column(Integer, ForeignKey('dishes.Dish_price'))
+    Price = Column(Integer, )
 
     def __init__(self, Dish_name=None):
         self.Dish_name = Dish_name
