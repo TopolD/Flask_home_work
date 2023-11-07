@@ -67,11 +67,25 @@ def User():
 def Signup():
     if not session.get('ID'):
         Db.init_db()
-        User = request.form.to_dict()
+        Users = Db.db_session.query(Db_moduls.User).all()
+        New_user = request.form.to_dict()
+        for User in Users:
+            if New_user:
 
-        return render_template('User.html')
-    else:
-        return app.redirect('user/signin', 302)
+                if User.User_name == New_user['User_name']:
+                    return app.redirect('/user/signup', 302)
+
+                else:
+                    Add_user = Db_moduls.User(
+                        User_name=New_user['User_name'],
+                        Password=New_user['Password'],
+                        Type=1
+                    )
+                    Db.db_session.add(Add_user)
+                    Db.db_session.commit()
+                    return app.redirect('/user/signin', 302)
+
+        return app.redirect('/', 302)
 
 
 @app.route('/user/signin', methods=['POST', 'GET'])
@@ -80,16 +94,25 @@ def Signin():
         return render_template('User.html')
     if request.method == 'POST':
         Db.init_db()
-        User = request.form.to_dict()
-        return render_template('User.html')
-    else:
-        return render_template('User.html')
+        Users = Db.db_session.query(Db_moduls.User).all()
+        New_user = request.form.to_dict()
+        if New_user:
+            for User in Users:
+                if User.User_name == New_user['User_name']:
+                    session['ID'] = User.ID
+                    session['Type'] = User.Type
+                    return render_template('User.html')
+                else:
+                    return app.redirect('/user/signin', 302)
+
+        return app.redirect('/', 302)
 
 
 @app.route('/user/logout', methods=['POST', 'GET'])
 def Logout():
     if session.get('ID'):
         session.pop('user.ID', None)
+        session.pop('user.Type', None)
     return render_template('User.html')
 
 
