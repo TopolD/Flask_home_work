@@ -9,15 +9,8 @@ services:
     image: postgres:latest
     ports:
       - "5432:5432"
-  rabbit-mg:
-    image: rabbitmq:latest
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: 'testuser'
-      RABBITMQ_DEFAULT_PASSWORD: 'testpassword'
-
+      POSTGRES_PASSWORD: example
   celery_worker:
     build: .
     command: celery A- Celery_Task.celery worker --loglevel=info
