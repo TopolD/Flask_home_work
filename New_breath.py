@@ -2,7 +2,7 @@ import os
 import random
 from Utils import Db, Db_moduls
 from flask import Flask, render_template, session, request
-
+from Celery_Task import send_email
 app = Flask(__name__)
 
 session_secret = os.environ.get('SESSION_SECRET')
@@ -20,6 +20,7 @@ app.secret_key = session_secret
 
 @app.route('/')
 def Window():
+    send_email.delay('n@gmail.com')
     return render_template('Base.html')
 
 
@@ -179,4 +180,4 @@ def Menu():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(port=5000, host='0.0.0.0')

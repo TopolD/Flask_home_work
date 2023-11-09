@@ -1,3 +1,4 @@
-import multiprocessing
+from threading import Thread
+import random
 
-print("Number of cpu : ", multiprocessing.cpu_count())
+List = random.randint(100000, 999999)
