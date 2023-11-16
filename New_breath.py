@@ -2,6 +2,7 @@ import os
 import random
 from Utils import Db, Db_moduls
 from flask import Flask, render_template, session, request
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -128,15 +129,15 @@ def Cart():
             return render_template('Cart.html', Carts=Carts, status=status)
     # else:
     #     return app.redirect('/user/signin', 302)
-    else:
-        return app.redirect('/user/signin', 302)
+    return render_template('Cart.html')
 
 
 @app.route('/cart/cartadd', methods=['POST', 'GET'])
 def CartAdd():
     Db.init_db()
     if request.method == 'GET':
-        Dishes = Db.db_session.query(Db_moduls.Dish).all()
+        user_id = 1
+        Dishes = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
         return render_template('Cart.html', Dishes=Dishes)
 
     if request.method == 'POST':
@@ -147,6 +148,7 @@ def CartAdd():
             )
             Db.db_session.add(New_car)
             Db.db_session.commit()
+            return render_template('Cart.html', )
     else:
         return render_template('Cart.html')
 
@@ -156,7 +158,8 @@ def CartAdd():
 @app.route('/cart/delete', methods=['POST', 'GET'])
 def CartDelete():
     if request.method == 'GET':
-        Dishes = Db.db_session.query(Db_moduls.Dish).all()
+        user_id = 1
+        Dishes = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
         return render_template('Cart.html', Dishes=Dishes)
     if request.method == 'POST':
         req_cart = request.form.to_dict()
