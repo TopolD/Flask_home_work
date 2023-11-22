@@ -1,12 +1,18 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from typing import Annotated
+
+from sqlalchemy import Column, Integer, String, ForeignKey, ARRAY
+from sqlalchemy.orm import Mapped, mapped_column
 from Utils.Db import Base
+from sqlalchemy.orm import relationship
+
+intpk = Annotated[int, mapped_column(primary_key=True, autoincrement=True)]
 
 
 class Addresses(Base):
     __tablename__ = 'addresses'
-    ID = Column(Integer, primary_key=True, autoincrement=True)
-    ID_USER = Column(Integer, ForeignKey('users.ID'))
-    Street = Column(String(120), nullable=False)
+    ID: Mapped[intpk]
+    ID_USER: Mapped[int] = mapped_column(ForeignKey('users.ID'), nullable=True)
+    Street: Mapped[str] = mapped_column(nullable=False)
     House = Column(String(50))
     Town = Column(String(50))
     Apt = Column(Integer)
@@ -20,23 +26,24 @@ class Addresses(Base):
 
 class User(Base):
     __tablename__ = 'users'
-    ID = Column(Integer, primary_key=True, autoincrement=True)
+    ID: Mapped[intpk]
     User_name = Column(String(50), unique=True, nullable=False)
     Password = Column(String(120), unique=True, nullable=False)
     Telephone = Column(Integer)
     Type = Column(Integer, nullable=False)
 
-    def __init__(self, User_name=None, Password=None, Type=None):
+    def __init__(self, User_name=None, Password=None, Type=None, Telephone=None):
         self.User_name = User_name
         self.Password = Password
+        self.Telephone = Telephone
         self.Type = Type
 
 
 class Dish(Base):
     __tablename__ = 'dishes'
-    ID = Column(Integer, primary_key=True, autoincrement=True)
+    ID: Mapped[intpk]
     Dish_name = Column(String(50), unique=True, nullable=False)
-    Dish_price = Column(Integer, nullable=False)
+    Dish_price = Column(String(50), nullable=False)
     Photo = Column(String(120), nullable=False)
     Category = Column(String(50), ForeignKey('category.Category_name'))
 
@@ -49,13 +56,13 @@ class Dish(Base):
 
 class Status(Base):
     __tablename__ = 'status'
-    ID = Column(Integer, primary_key=True, autoincrement=True)
+    ID: Mapped[intpk]
     Status_name = Column(String(50), unique=True, nullable=False)
 
 
 class Category(Base):
     __tablename__ = 'category'
-    ID = Column(Integer, primary_key=True, autoincrement=True)
+    ID: Mapped[intpk]
     Category_name = Column(String(50), unique=True, nullable=False)
 
     def __init__(self, Category_name=None):
@@ -64,13 +71,15 @@ class Category(Base):
 
 # cart
 class Orders(Base):
-    __tablename__ = 'Orders'
-    ID = Column(Integer, primary_key=True, autoincrement=True)
-    ID_USER = Column(Integer, ForeignKey('users.ID'))
-    ID_ADDRESS = Column(Integer, ForeignKey('addresses.ID'))
+    __tablename__ = 'orders'
+    ID: Mapped[intpk]
+    User_id = Column(Integer, ForeignKey('users.ID'))
     Dish_name = Column(String(50))
-    Status = Column(String(50), ForeignKey('status.Status_name'))
-    Price = Column(Integer, )
+    Status = Column(String(50))
+    Price = Column(String(50))
 
-    def __init__(self, Dish_name=None):
+    def __init__(self, Dish_name=None, User_id=None, Status=None, Price=None):
+        self.User_id = User_id
         self.Dish_name = Dish_name
+        self.Status = Status
+        self.Price = Price

@@ -2,7 +2,11 @@ import os
 import random
 from Utils import Db, Db_moduls
 from flask import Flask, render_template, session, request
-from werkzeug.security import generate_password_hash, check_password_hash
+
+# from werkzeug.security import generate_password_hash, check_password_hash
+# from flask_wtf import Form
+# from wtforms import StringField, PasswordField, BooleanField, SubmitField
+# from wtforms.validators import InputRequired, Email
 
 app = Flask(__name__)
 
@@ -123,32 +127,42 @@ def Cart():
         # if session.get('ID'):
         user_id = 1
         Db.init_db()
-        statuses = Db.db_session.query(Db_moduls.Status).all()
-        Carts = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
-        for status in statuses:
-            return render_template('Cart.html', Carts=Carts, status=status)
+        Carts = Db.db_session.query(Db_moduls.Orders.Dish_name).filter(Db_moduls.Orders.User_id == user_id).all()
+        Status = Db.db_session.query(Db_moduls.Orders.Status).filter(Db_moduls.Orders.User_id == user_id).all()
+
+        return render_template('Cart.html', Carts=Carts, Status=Status)
     # else:
     #     return app.redirect('/user/signin', 302)
-    return render_template('Cart.html')
 
 
 @app.route('/cart/cartadd', methods=['POST', 'GET'])
 def CartAdd():
-    Db.init_db()
     if request.method == 'GET':
+        Db.init_db()
         user_id = 1
-        Dishes = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
+        Dishes = Db.db_session.query(Db_moduls.Dish).all()
         return render_template('Cart.html', Dishes=Dishes)
 
     if request.method == 'POST':
+        user_id = 1
         req_cart = request.form.to_dict()
         if req_cart:
+            Db.init_db()
+            status_values = ''.join(map(str, [status[0] for status in
+                                              Db.db_session.query(Db_moduls.Status.Status_name).filter(
+                                                  Db_moduls.Status.ID == 1).all()]))
+            price_values = ''.join(
+                map(str, [price[0] for price in Db.db_session.query(Db_moduls.Dish.Dish_price).filter(
+                    Db_moduls.Dish.Dish_name == req_cart["Dish_name"]).all()]))
             New_car = Db_moduls.Orders(
+                User_id=user_id,
                 Dish_name=req_cart['Dish_name'],
+                Status=status_values,
+                Price=price_values
             )
             Db.db_session.add(New_car)
             Db.db_session.commit()
-            return render_template('Cart.html', )
+            return render_template('Cart.html')
     else:
         return render_template('Cart.html')
 
@@ -159,16 +173,21 @@ def CartAdd():
 def CartDelete():
     if request.method == 'GET':
         user_id = 1
-        Dishes = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.ID_USER == user_id).all()
+
+        Dishes = Db.db_session.query(Db_moduls.Orders.Dish_name).filter(Db_moduls.Orders.User_id == user_id).all()
         return render_template('Cart.html', Dishes=Dishes)
     if request.method == 'POST':
+
         req_cart = request.form.to_dict()
+        user_id = 1
         if req_cart:
-            New_car = Db_moduls.Orders(
-                Dish_name=req_cart['Dish_name'],
-            )
-            Db.db_session.delete(New_car)
-            Db.db_session.commit()
+            dish_to_delete = Db.db_session.query(Db_moduls.Orders).filter_by(
+                User_id=user_id, Dish_name=req_cart.get("Dish_name")).first()
+
+            if dish_to_delete:
+                Db.db_session.delete(dish_to_delete)
+                Db.db_session.commit()
+        return render_template('Cart.html', )
     return render_template('Cart.html')
 
 
