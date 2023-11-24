@@ -127,8 +127,8 @@ def Cart():
         # if session.get('ID'):
         user_id = 1
         Db.init_db()
-        Carts = Db.db_session.query(Db_moduls.Orders.Dish_name).filter(Db_moduls.Orders.User_id == user_id).all()
-        Status = Db.db_session.query(Db_moduls.Orders.Status).filter(Db_moduls.Orders.User_id == user_id).all()
+        Carts = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.User_id == user_id).all()
+        Status = Db.db_session.query(Db_moduls.Orders).filter(Db_moduls.Orders.User_id == user_id).all()
 
         return render_template('Cart.html', Carts=Carts, Status=Status)
     # else:
