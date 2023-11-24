@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if request.path=='/cart' %}
+    {% if request.method=='GET' %}
+        <form method="post">
+            <a href="/cart" style="my-link">Cart</a>
+            <a href="/cart/cartadd" style="my-link">Add dish</a>
+            <a href="/cart/delete" style="my-link">Del Dish</a>
+            <a href="/" style="my-link">Return to home</a>
+        </form>
+    {% for Cart in Carts %}
+        {{Cart.Dish_name}}|{{Cart.Price}}
+    {% endfor %}
+    {% for Stats in Status %}
+        {{Stats.Status}}
+    {% endfor %}
+
+    {% endif %}
+
+{% endif %}
+{% if request.path =='/cart/cartadd' %}
+
+    {% if request.method=='GET' %}
+        {% for Dish in Dishes %}
+            {{Dish.Dish_name}}
+        {% endfor %}
+        <form method="post">
+            <button type="submit">Add</button>
+        </form>
+    {% endif %}
+
+    {% if request.method=='POST' %}
+        <form method="post">
+            <input type="text" name="Dish_name" placeholder="Dish_name">
+            <button type="submit">Add</button>
+        </form>
+    {% endif %}
+{% endif %}
+
+{% if request.path=='/cart/delete' %}
+    {% if request.method=='GET' %}
+        {% for Dish in Dishes %}
+            {{Dish.Dish_name}}
+        {% endfor %}
+        <form method="post">
+            <button type="submit">Del</button>
+        </form>
+    {% endif %}
+
+    {% if request.method=='POST' %}
+        <form method="post">
+            <input type="text" name="Dish_name" placeholder="Dish_name">
+            <button type="submit">Del</button>
+        </form>
+    {% endif %}
+{% endif %}
+</body>
+</html>
